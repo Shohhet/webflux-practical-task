@@ -1,0 +1,74 @@
+POST http://localhost:8081/api/v1/users/register
+Content-Type: application/json
+
+{
+  "firstName": "Alex",
+  "lastName": "Alexeev",
+  "email": "aa@gmail.com",
+  "password": "5"
+}
+
+###
+GET http://localhost:8081/api/v1/users/11
+Authorization: Bearer {{auth_token}}
+Accept: application/json
+
+###
+GET http://localhost:8081/api/v1/users/me
+Authorization: Bearer {{auth_token}}
+Accept: application/json
+
+###
+### as ADMIN
+GET http://localhost:8081/api/v1/users/login
+Authorization: Basic Q2hhcGFAZ21haWwuY29tOjU=
+
+> {% client.global.set("auth_token", response.body["authToken"]); %}
+###
+
+### as MODERATOR
+GET http://localhost:8081/api/v1/users/login
+Authorization: Basic cHBAZ21haWwuY29tOjU=
+
+> {% client.global.set("auth_token", response.body["authToken"]); %}
+###
+
+### as USER
+GET http://localhost:8081/api/v1/users/login
+Authorization: Basic YWFAZ21haWwuY29tOjU=
+
+> {% client.global.set("auth_token", response.body["authToken"]); %}
+###
+
+
+### GET ALL USERS
+GET http://localhost:8081/api/v1/users/
+Authorization: Bearer {{auth_token}}
+Accept: application/json
+
+###
+
+PUT http://localhost:8081/api/v1/users/
+Authorization: Bearer {{auth_token}}
+Content-Type: application/json
+
+{
+  "id": 12,
+  "firstName": "Bruce",
+  "lastName": "Lee",
+  "email": "ss@gmail.com",
+  "password": "5"
+}
+
+###
+
+DELETE http://localhost:8081/api/v1/users/10
+Authorization: Bearer {{auth_token}}
+
+###
+GET http://localhost:8081/api/v1/files/11
+Authorization: Bearer {{auth_token}}
+
+###
+GET http://localhost:8081/api/v1/users/me/files
+Authorization: Bearer {{auth_token}}

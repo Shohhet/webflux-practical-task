@@ -1,0 +1,10 @@
+package com.shoggoth.webfluxfileserver.exception;
+
+public enum ErrorCode {
+    FILE_SERVER_INTERNAL_ERROR,
+    FILE_SERVER_AUTHENTICATION_ERROR,
+    FILE_SERVER_AUTHORIZATION_ERROR,
+    FILE_SERVER_STORAGE_ERROR,
+    FILE_SERVER_DATABASE_ERROR
+
+}

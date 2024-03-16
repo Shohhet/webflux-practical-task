@@ -1,0 +1,25 @@
+-- liquibase formatted sql
+
+-- changeset shoggoth:1
+ALTER TABLE user
+    MODIFY created TIMESTAMP
+        DEFAULT CURRENT_TIMESTAMP,
+    MODIFY updated TIMESTAMP
+        DEFAULT CURRENT_TIMESTAMP
+        ON UPDATE CURRENT_TIMESTAMP;
+
+-- changeset shoggoth:2
+ALTER TABLE event
+    MODIFY created TIMESTAMP
+        DEFAULT CURRENT_TIMESTAMP,
+    MODIFY updated TIMESTAMP
+        DEFAULT CURRENT_TIMESTAMP
+        ON UPDATE CURRENT_TIMESTAMP;
+
+-- changeset shoggoth:3
+ALTER TABLE file
+    MODIFY created TIMESTAMP
+        DEFAULT CURRENT_TIMESTAMP,
+    MODIFY updated TIMESTAMP
+        DEFAULT CURRENT_TIMESTAMP
+        ON UPDATE CURRENT_TIMESTAMP;
