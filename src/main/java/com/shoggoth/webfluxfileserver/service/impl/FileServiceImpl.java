@@ -106,10 +106,6 @@ public class FileServiceImpl implements FileService {
                 .map(fileMapper::map);
     }
 
-    @Override
-    public Mono<FileDto> updateFile(FileDto fileDto) {
-        return null;
-    }
 
     @Override
     public Mono<Void> deleteFile(Long id) {

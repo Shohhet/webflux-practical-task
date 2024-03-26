@@ -4,8 +4,9 @@ import com.shoggoth.webfluxfileserver.entity.Status;
 import com.shoggoth.webfluxfileserver.exception.AuthenticationException;
 import com.shoggoth.webfluxfileserver.exception.ErrorCode;
 import com.shoggoth.webfluxfileserver.repository.UserRepository;
-import com.shoggoth.webfluxfileserver.security.BasicAuthReturnAccessTokenSuccessHandler;
+import com.shoggoth.webfluxfileserver.security.UserLoginSuccessHandler;
 import com.shoggoth.webfluxfileserver.security.ServerHttpBearerAuthenticationConverter;
+import com.shoggoth.webfluxfileserver.security.UsernamePasswordJsonAuthenticationConverter;
 import com.shoggoth.webfluxfileserver.security.token.AccessTokenFactory;
 import com.shoggoth.webfluxfileserver.security.token.TokenConverter;
 import lombok.RequiredArgsConstructor;
@@ -13,6 +14,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.codec.json.Jackson2JsonDecoder;
 import org.springframework.security.access.expression.method.DefaultMethodSecurityExpressionHandler;
 import org.springframework.security.access.expression.method.MethodSecurityExpressionHandler;
 import org.springframework.security.access.hierarchicalroles.RoleHierarchy;
@@ -61,6 +63,7 @@ public class SecurityConfig {
                 .csrf(CsrfSpec::disable)
                 .formLogin(FormLoginSpec::disable)
                 .addFilterAt(basicAuthenticationFilter(tokenFactory, tokenConverter, userRepository), SecurityWebFiltersOrder.HTTP_BASIC)
+                .addFilterAfter(usernamePasswordJsonAuthenticationFilter(tokenFactory, tokenConverter, userRepository), SecurityWebFiltersOrder.HTTP_BASIC)
                 .addFilterAt(tokenAuthenticationFilter(tokenConverter), SecurityWebFiltersOrder.AUTHENTICATION)
                 .build();
     }
@@ -90,7 +93,7 @@ public class SecurityConfig {
 
         var authManager = new UserDetailsRepositoryReactiveAuthenticationManager(reactiveUserDetailsService(userRepository));
         authManager.setPasswordEncoder(passwordEncoder());
-        var successHandler = new BasicAuthReturnAccessTokenSuccessHandler(tokenFactory, tokenConverter);
+        var successHandler = new UserLoginSuccessHandler(tokenFactory, tokenConverter);
         ServerWebExchangeMatcher matcher = ServerWebExchangeMatchers.pathMatchers(HttpMethod.GET, LOGIN_PATH);
 
         var basicAuthenticationFilter = new AuthenticationWebFilter(authManager);
@@ -98,6 +101,25 @@ public class SecurityConfig {
         basicAuthenticationFilter.setAuthenticationSuccessHandler(successHandler);
 
         return basicAuthenticationFilter;
+    }
+
+    @Bean
+    public AuthenticationWebFilter usernamePasswordJsonAuthenticationFilter(AccessTokenFactory tokenFactory,
+                                                                            TokenConverter tokenConverter,
+                                                                            UserRepository userRepository) {
+
+        var authManager = new UserDetailsRepositoryReactiveAuthenticationManager(reactiveUserDetailsService(userRepository));
+        authManager.setPasswordEncoder(passwordEncoder());
+        var successHandler = new UserLoginSuccessHandler(tokenFactory, tokenConverter);
+        ServerWebExchangeMatcher matcher = ServerWebExchangeMatchers.pathMatchers(HttpMethod.POST, LOGIN_PATH);
+        var authConverter = new UsernamePasswordJsonAuthenticationConverter(new Jackson2JsonDecoder());
+        var usernamePasswordJsonAuthenticationFilter = new AuthenticationWebFilter(authManager);
+        usernamePasswordJsonAuthenticationFilter.setServerAuthenticationConverter(authConverter);
+        usernamePasswordJsonAuthenticationFilter.setRequiresAuthenticationMatcher(matcher);
+        usernamePasswordJsonAuthenticationFilter.setAuthenticationSuccessHandler(successHandler);
+
+        return usernamePasswordJsonAuthenticationFilter;
+
     }
 
     @Bean
@@ -129,5 +151,4 @@ public class SecurityConfig {
         handler.setRoleHierarchy(roleHierarchy);
         return handler;
     }
-
 }

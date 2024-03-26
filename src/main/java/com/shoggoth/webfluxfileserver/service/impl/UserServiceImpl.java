@@ -104,6 +104,7 @@ public class UserServiceImpl implements UserService {
                 )
                 .doOnError((throwable) -> log.warn("IN findUserById - user with id: {} - does not exist.", userDto.id()))
                 .map(userEntity -> {
+                    userEntity.setEmail(userDto.email());
                     userEntity.setPassword(userDto.password());
                     userEntity.setFirstName(userDto.firstName());
                     userEntity.setLastName(userDto.lastName());

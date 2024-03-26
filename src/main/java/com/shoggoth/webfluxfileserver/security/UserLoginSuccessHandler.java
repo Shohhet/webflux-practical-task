@@ -18,7 +18,7 @@ import reactor.core.publisher.Mono;
 
 
 @RequiredArgsConstructor
-public class BasicAuthReturnAccessTokenSuccessHandler implements ServerAuthenticationSuccessHandler {
+public class UserLoginSuccessHandler implements ServerAuthenticationSuccessHandler {
     private final ObjectMapper objectMapper = new ObjectMapper();
     private final TokenFactory<Token, Authentication> tokenFactory;
     private final TokenConverter tokenConverter;
@@ -48,6 +48,4 @@ public class BasicAuthReturnAccessTokenSuccessHandler implements ServerAuthentic
             return Mono.error(e);
         }
     }
-
-
 }

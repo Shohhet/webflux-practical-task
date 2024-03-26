@@ -1,0 +1,27 @@
+version: '1'
+
+services:
+  file_server:
+    image: webfluxfileserver-file_server:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
+    extra_hosts:
+      - 'host.docker.internal:host-gateway'
+    environment:
+      - FILE_SERVER_JDBC_URL = jdbc:mysql://host-docker-internal:3306/file_server_db
+      - FILE_SERVER_R2DBC_URL = r2dbc:pool:mysql://host-docker-internal:3306/file_server_db
+    ports:
+      - 8081:8081
+    depends_on:
+      - db_mysql_8.2
+
+  db_mysql_8.2:
+    image: "mysql:8.2"
+    environment:
+      MYSQL_DATABASE: file_server_db
+      MYSQL_USER: admin
+      MYSQL_PASSWORD: admin
+      MYSQL_ROOT_PASSWORD: root
+    ports:
+      - 3306:3306

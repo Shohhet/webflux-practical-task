@@ -16,8 +16,6 @@ public interface FileService {
     @PreAuthorize("hasAuthority('USER')")
     Flux<FileDto> getFilesForAuthenticatedUser();
 
-    Mono<FileDto> updateFile(FileDto fileDto);
-
     @PreAuthorize("hasAuthority('MODERATOR')")
     Mono<Void> deleteFile(Long id);
 

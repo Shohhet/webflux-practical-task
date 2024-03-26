@@ -1,10 +1,22 @@
+POST http://localhost:8081/api/v1/users/login
+Content-Type: application/json
+
+{
+  "email": "aa@gmail.com",
+  "password": "5"
+}
+
+> {% client.global.set("auth_token", response.body["authToken"]); %}
+
+###
+
 POST http://localhost:8081/api/v1/users/register
 Content-Type: application/json
 
 {
-  "firstName": "Alex",
-  "lastName": "Alexeev",
-  "email": "aa@gmail.com",
+  "firstName": "Anton",
+  "lastName": "Antonov",
+  "email": "abaa@gmail.com",
   "password": "5"
 }
 
@@ -53,10 +65,10 @@ Authorization: Bearer {{auth_token}}
 Content-Type: application/json
 
 {
-  "id": 12,
+  "id": 20,
   "firstName": "Bruce",
   "lastName": "Lee",
-  "email": "ss@gmail.com",
+  "email": "abaa@gmail.com",
   "password": "5"
 }
 
